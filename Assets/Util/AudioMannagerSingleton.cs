@@ -12,7 +12,8 @@ public class AudioManagerSingleton : MonoBehaviour {
 	{
 		CHICK_WRONG,
 		GRITO,
-		SWOSH
+		SWOSH,
+		HOSPITAL
 	}
 
 	/// <summary>
@@ -33,7 +34,7 @@ public class AudioManagerSingleton : MonoBehaviour {
 	/// </summary>
 	public float masterVolume = 1;
 
-	public float sfxVolume = 1;
+	public float sfxVolume = 0.4f;
 
 	public float musicVolume = 1;
 
@@ -116,7 +117,8 @@ public class AudioManagerSingleton : MonoBehaviour {
 	/// <param name="p_loop"> Sets the AudioClip to Loop. By doing so you must stop it manually. </param>
 	/// <param name="p_volume"> Sets the volume for this AudioClip. From 0(inclusive) to 1(inclusive). </param>
 	/// <returns> Returns an ID for the AudioClip being played, which may be used to stop the sound. </returns>
-	public int PlaySound(AudioClipName p_audioClipName, AudioType p_audioType, bool p_loop = false, float p_volume = 1f)
+	public int PlaySound(AudioClipName p_audioClipName, AudioType p_audioType, bool p_loop = false, float p_volume = 1f,
+		float pitchMin = 1f, float pitchMax = 1f)
 	{
 		CheckForFinishedAudioClips();
 		if(_audioSourceInactivePool.Count > 0)
@@ -133,6 +135,7 @@ public class AudioManagerSingleton : MonoBehaviour {
 
 			_audioSourceInactivePool[0].clip = _audioClips[(int)p_audioClipName];
 			_audioSourceInactivePool[0].loop = p_loop;
+			_audioSourceInactivePool[0].pitch = (Random.Range(0.6f, .9f)); //Melhoria
 			float soundType;
 			if (p_audioType == AudioType.MUSIC) {
 				soundType = musicVolume;

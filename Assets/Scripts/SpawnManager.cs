@@ -10,6 +10,8 @@ public class SpawnManager : MonoBehaviour {
     public Vector2 randomness;
     void Start () {
         InvokeRepeating("SpawnGO", 1, spawnDelay);
+		AudioManagerSingleton.instance.PlaySound (
+			AudioManagerSingleton.AudioClipName.HOSPITAL, AudioManagerSingleton.AudioType.MUSIC, true, 1f);
 	}
 	
 	void Update () {
