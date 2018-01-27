@@ -20,7 +20,7 @@ public class SpawnManager : MonoBehaviour {
     {
         int spawnPointIndex = Random.Range(0, spawnPoints.Length);
         Vector3 spawnPosition = spawnPoints[spawnPointIndex].position;
-        spawnPosition.y += Random.Range(-1.3f, 0.2f);
+        spawnPosition.y += Random.Range(-2.3f, -0.3f);
         Instantiate(pacienteGO, spawnPosition, spawnPoints[spawnPointIndex].rotation);
     }
 }
