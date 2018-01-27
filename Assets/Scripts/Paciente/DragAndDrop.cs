@@ -30,6 +30,7 @@ public class DragAndDrop : MonoBehaviour {
     void Start()
     {
         _rigidBody = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
     }
 
     void Update()
@@ -88,14 +89,8 @@ public class DragAndDrop : MonoBehaviour {
         state = newState;
         switch(newState)
         {
-            case State.DRAGGING:
-                startDragging();
-                break;
             case State.DROPPING:
                 startDropping();
-                break;
-            case State.IDLE:
-                startIdle();
                 break;
         }
         updateAnimation();
@@ -104,7 +99,7 @@ public class DragAndDrop : MonoBehaviour {
     void updateDragging()
     {
         recordInertiaHistory();
-        MoveToMousePosition();
+        moveToMousePosition();
     }
     
     void startDropping()
@@ -119,7 +114,7 @@ public class DragAndDrop : MonoBehaviour {
 
         if (inertiaPositioHistory.Count == 0)
         {
-            throwVelocity = 0;
+            throwVelocity = Vector2.zero;
         }
         else
         {
