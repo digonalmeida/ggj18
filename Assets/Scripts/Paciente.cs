@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Paciente : MonoBehaviour {
-
+    public GameObject healAnimation = null;
+    Animator animator;
     public float walkSpeed;
     public bool direction;
     public float maxDistance;
@@ -37,7 +38,8 @@ public class Paciente : MonoBehaviour {
     public State state;
     void Start()
     {
-
+        animator = GetComponent<Animator>();
+        setState(State.WALKING);
     }
 
 
@@ -56,9 +58,20 @@ public class Paciente : MonoBehaviour {
 
     void UpdateHospital()
     {
+        
+        if(infectionLevel > 0 && infectionLevel - (healPerSecond * Time.deltaTime) < 0)
+        {
+            Debug.Log("DEEU");
+            healAnimation.SetActive(true);
+            healAnimation.GetComponent<Animator>().Play("heal");
+        }
         infectionLevel -= healPerSecond * Time.deltaTime;
         if (infectionLevel <= -10) infectionLevel = 10;
         UpdateInfectionIndicator();
+        if(infectionLevel <= 0)
+        {
+
+        }
        
     }
     void setState(State newState)
@@ -66,6 +79,12 @@ public class Paciente : MonoBehaviour {
         state = newState;
         switch (state)
         {
+            case State.WALKING:
+                animator.Play("walking");
+                break;
+            case State.HOSPITAL:
+                animator.Play("idle");
+                break;
         }
     }
     public void OnDragged()
@@ -137,7 +156,7 @@ public class Paciente : MonoBehaviour {
         {
             Vector3 newScale = transform.localScale;
             newScale.x = Mathf.Abs(newScale.x);
-            transform.Translate(Vector3.right * Time.deltaTime * (walkSpeed + Random.Range(0f, 2f)));
+            transform.localScale = newScale;
         }
     }
 
