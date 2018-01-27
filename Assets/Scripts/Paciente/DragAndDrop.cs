@@ -5,10 +5,8 @@ using UnityEngine.Events;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class DragAndDrop : MonoBehaviour {
-    static int holding = 0;
-    static int maxHolding = 3;
     Animator animator;
-
+    GameController gameController;
     //Used for drop inertia
     public List<Vector3> inertiaPositioHistory;
     public int inertiaHistoryMaxCount = 5;
@@ -39,6 +37,7 @@ public class DragAndDrop : MonoBehaviour {
 
     void Start()
     {
+        gameController = FindObjectOfType<GameController>();
         _rigidBody = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         _paciente = GetComponent<Paciente>();
@@ -55,6 +54,9 @@ public class DragAndDrop : MonoBehaviour {
                 UpdateIdle();
                 return;
         }
+        Vector3 pos = transform.position;
+        pos.z = pos.y * 10;
+        transform.position = pos;
     }
 
     void updateAnimation()
@@ -123,7 +125,7 @@ public class DragAndDrop : MonoBehaviour {
     public float distance;
     bool checkMouseCollision()
     {
-        if(holding >= maxHolding)
+        if(gameController.holding >= gameController.maxHolding)
         {
             return false;
         }
@@ -143,7 +145,8 @@ public class DragAndDrop : MonoBehaviour {
     }
     void startDragging()
     {
-        holding++;
+        _rigidBody.isKinematic = true;
+        gameController.holding++;
         AudioManagerSingleton.instance.sfxVolume = 3f;
         AudioManagerSingleton.instance.PlaySound(Random.Range(4, 9), AudioManagerSingleton.AudioType.SFX, false, 0.5f);
         AudioManagerSingleton.instance.sfxVolume = 0.4f;
@@ -162,7 +165,8 @@ public class DragAndDrop : MonoBehaviour {
     
     void startDropping()
     {
-        holding = 0;
+        _rigidBody.isKinematic = false;
+        gameController.holding = 0;
         AudioManagerSingleton.instance.PlaySound(droppingSfx, AudioManagerSingleton.AudioType.SFX);
         applyInertia();
         StartCoroutine(droppingCoroutine());
@@ -180,7 +184,7 @@ public class DragAndDrop : MonoBehaviour {
         {
             
             throwVelocity = (transform.position - inertiaPositioHistory[0]) * inertiaSensibility;
-            throwVelocity.x += Random.RandomRange(-5f, 5f);
+            throwVelocity.x += Random.Range(-5f, 5f);
         }
         
         _rigidBody.velocity = throwVelocity;
@@ -202,9 +206,11 @@ public class DragAndDrop : MonoBehaviour {
 
     void stopDropping()
     {
+        animator.StopPlayback();
         _rigidBody.velocity = Vector2.zero;
         setState(State.IDLE);
         _paciente.OnDropped();
+
     }
 
     void moveToMousePosition()
