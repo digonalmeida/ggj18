@@ -132,7 +132,7 @@ public class DragAndDrop : MonoBehaviour {
             return false;
         }
         Vector2 mousePosition = Camera.main.ScreenToWorldPoint((Vector3)Input.mousePosition);
-        Debug.Log(mousePosition);
+
         distance = ((Vector2)transform.position - mousePosition).magnitude;
         
         if (distance < colliderRadius)
