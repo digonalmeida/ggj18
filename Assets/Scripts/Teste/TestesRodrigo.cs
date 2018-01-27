@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class TestesRodrigo : MonoBehaviour {
     float walkVelocity = 1;
@@ -14,4 +13,13 @@ public class TestesRodrigo : MonoBehaviour {
 	void Update () {
         transform.position += (Vector3) Vector2.right * (walkVelocity * Time.deltaTime);
 	}
+
+    void OnMouseDown()
+    {
+    }
+
+    void OnMouseUp()
+    {
+
+    }
 }

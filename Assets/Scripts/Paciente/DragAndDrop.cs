@@ -5,6 +5,8 @@ using UnityEngine.Events;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class DragAndDrop : MonoBehaviour {
+    static int holding = 0;
+    static int maxHolding = 3;
     Animator animator;
 
     //Used for drop inertia
@@ -18,9 +20,13 @@ public class DragAndDrop : MonoBehaviour {
     string draggingAnimationName = "dragging";
     string droppingAnimationName = "dropping";
 
+    public float colliderRadius = 10f;
+
 
     AudioManagerSingleton.AudioClipName draggingSfx = AudioManagerSingleton.AudioClipName.GRITO;
     AudioManagerSingleton.AudioClipName droppingSfx = AudioManagerSingleton.AudioClipName.SWOSH;
+
+    Paciente _paciente;
 
     public enum State {
         IDLE,
@@ -35,6 +41,7 @@ public class DragAndDrop : MonoBehaviour {
     {
         _rigidBody = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        _paciente = GetComponent<Paciente>();
     }
 
     void Update()
@@ -43,6 +50,9 @@ public class DragAndDrop : MonoBehaviour {
         {
             case State.DRAGGING:
                 updateDragging();
+                return;
+            case State.IDLE:
+                UpdateIdle();
                 return;
         }
     }
@@ -103,18 +113,54 @@ public class DragAndDrop : MonoBehaviour {
         updateAnimation();
     }
 
+    void UpdateIdle()
+    {
+        if(checkMouseCollision())
+        {
+            setState(State.DRAGGING);
+        }
+    }
+    public float distance;
+    bool checkMouseCollision()
+    {
+        if(holding >= maxHolding)
+        {
+            return false;
+        }
+        if(!Input.GetMouseButton(0))
+        {
+            return false;
+        }
+        Vector2 mousePosition = Camera.main.ScreenToWorldPoint((Vector3)Input.mousePosition);
+        Debug.Log(mousePosition);
+        distance = ((Vector2)transform.position - mousePosition).magnitude;
+        
+        if (distance < colliderRadius)
+        {
+            return true;
+        }
+        return false;
+    }
     void startDragging()
     {
-        AudioManagerSingleton.instance.PlaySound(draggingSfx, AudioManagerSingleton.AudioType.SFX);
+        holding++;
+        AudioManagerSingleton.instance.PlaySound(draggingSfx, AudioManagerSingleton.AudioType.SFX, false, 0.5f);
+        _paciente.OnDragged();
     }
     void updateDragging()
     {
         recordInertiaHistory();
         moveToMousePosition();
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            setState(State.DROPPING);
+        }
     }
     
     void startDropping()
     {
+        holding = 0;
         AudioManagerSingleton.instance.PlaySound(droppingSfx, AudioManagerSingleton.AudioType.SFX);
         applyInertia();
         StartCoroutine(droppingCoroutine());
@@ -130,7 +176,9 @@ public class DragAndDrop : MonoBehaviour {
         }
         else
         {
+            
             throwVelocity = (transform.position - inertiaPositioHistory[0]) * inertiaSensibility;
+            throwVelocity.x += Random.RandomRange(-5f, 5f);
         }
         
         _rigidBody.velocity = throwVelocity;
@@ -154,6 +202,7 @@ public class DragAndDrop : MonoBehaviour {
     {
         _rigidBody.velocity = Vector2.zero;
         setState(State.IDLE);
+        _paciente.OnDropped();
     }
 
     void moveToMousePosition()
@@ -161,21 +210,5 @@ public class DragAndDrop : MonoBehaviour {
         Vector3 newPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         newPosition.z = transform.position.z;
         transform.position = newPosition;
-    }
-    
-    void OnMouseDown()
-    {
-        if(state == State.IDLE)
-        {
-            setState(State.DRAGGING);
-        }
-    }
-
-    void OnMouseUp()
-    {
-        if(state == State.DRAGGING)
-        {
-            setState(State.DROPPING);
-        }
     }
 }
