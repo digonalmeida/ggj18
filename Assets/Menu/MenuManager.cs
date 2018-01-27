@@ -19,4 +19,11 @@ public class MenuManager : MonoBehaviour
         Application.Quit();
 #endif
     }
+
+    public void PlayUISound()
+    {
+
+        AudioManagerSingleton.AudioClipName buttonSfx = AudioManagerSingleton.AudioClipName.CLICK;
+        AudioManagerSingleton.instance.PlaySound(buttonSfx, AudioManagerSingleton.AudioType.SFX, false, 0.5f);
+    }
 }

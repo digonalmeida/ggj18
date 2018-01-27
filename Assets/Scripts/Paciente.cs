@@ -34,8 +34,9 @@ public class Paciente : MonoBehaviour {
 
     public float hospitalLinePos;
     public bool bateVolta = false;
+
+    AudioManagerSingleton.AudioClipName healSfx = AudioManagerSingleton.AudioClipName.HEAL;
     Rigidbody2D _rigidbody;
-    
 
     // Máquina de estados do paciente
     /*
@@ -75,8 +76,10 @@ public class Paciente : MonoBehaviour {
         
         if(infectionLevel > 0 && infectionLevel - (healPerSecond * Time.deltaTime) < 0)
         {
-            Debug.Log("DEEU");
             healAnimation.SetActive(true);
+            AudioManagerSingleton.instance.sfxVolume = 1.4f;
+            AudioManagerSingleton.instance.PlaySound(healSfx, AudioManagerSingleton.AudioType.SFX);
+            AudioManagerSingleton.instance.sfxVolume = 0.4f;
             healAnimation.GetComponent<Animator>().Play("heal");
         }
         infectionLevel -= healPerSecond * Time.deltaTime;

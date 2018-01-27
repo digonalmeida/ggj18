@@ -184,7 +184,7 @@ public class DragAndDrop : MonoBehaviour {
         {
             
             throwVelocity = (transform.position - inertiaPositioHistory[0]) * inertiaSensibility;
-            throwVelocity.x += Random.RandomRange(-5f, 5f);
+            throwVelocity.x += Random.Range(-5f, 5f);
         }
         
         _rigidBody.velocity = throwVelocity;
