@@ -135,7 +135,7 @@ public class AudioManagerSingleton : MonoBehaviour {
 
 			_audioSourceInactivePool[0].clip = _audioClips[(int)p_audioClipName];
 			_audioSourceInactivePool[0].loop = p_loop;
-			_audioSourceInactivePool[0].pitch = (Random.Range(0.6f, .9f)); //Melhoria
+			_audioSourceInactivePool[0].pitch = (Random.Range(pitchMin, pitchMax)); //Melhoria
 			float soundType;
 			if (p_audioType == AudioType.MUSIC) {
 				soundType = musicVolume;
@@ -172,7 +172,7 @@ public class AudioManagerSingleton : MonoBehaviour {
 
 			_audioSourceInactivePool[0].clip = _audioClips[(int)p_audioClipName];
 			_audioSourceInactivePool[0].loop = p_loop;
-			_audioSourceInactivePool[0].pitch = (Random.Range(0.6f, .9f)); //Melhoria
+			_audioSourceInactivePool[0].pitch = (Random.Range(pitchMin, pitchMax)); //Melhoria
 			float soundType;
 			if (p_audioType == AudioType.MUSIC) {
 				soundType = musicVolume;
@@ -398,6 +398,31 @@ public class AudioManagerSingleton : MonoBehaviour {
 			} else {
 				_audioSourceActivePool [i].volume = (((float)_audioSourceActivePoolParameters [i] [4] / _volumeIntegerBase) * masterVolume) * sfxVolume;
 			}
+		}
+	}
+
+	public float fadeSpeed = 0.5f;
+	public float fadeInOutMultiplier = 0.0f;
+
+	public IEnumerator FadeOut(int p_soundID, float p_volumeMin)
+	{
+		_audioSourceActivePool[p_soundID].volume = 0.000f;
+		while (_audioSourceActivePool[p_soundID].volume >= p_volumeMin)
+		{
+			_audioSourceActivePool[p_soundID].volume -= fadeSpeed * 2;
+			//Debug.Log("Fade: " + lastTrackName + " " + _audioSources[lastTrackIndex].volume.ToString() + " Rise: " + playingTrackName + " " + _audioSources[playingTrackIndex].volume.ToString());
+			yield return new WaitForSeconds(0.001f);
+		}
+	}
+
+	public IEnumerator FadeIn(int p_soundID, float p_volumeMax)
+	{
+		_audioSourceActivePool[p_soundID].volume = 0.000f;
+		while (_audioSourceActivePool[p_soundID].volume <= p_volumeMax)
+		{
+			_audioSourceActivePool[p_soundID].volume += fadeSpeed * 2;
+			//Debug.Log("Fade: " + lastTrackName + " " + _audioSources[lastTrackIndex].volume.ToString() + " Rise: " + playingTrackName + " " + _audioSources[playingTrackIndex].volume.ToString());
+			yield return new WaitForSeconds(0.001f);
 		}
 	}
 }
