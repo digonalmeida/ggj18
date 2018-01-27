@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SafeZone : MonoBehaviour {
 
@@ -36,11 +37,15 @@ public class SafeZone : MonoBehaviour {
     {
         Debug.Log("good");
         animator.Play("Good");
+		GameScoreMannager.Instance.scoreSaved ++;
+		Debug.Log(GameScoreMannager.Instance.scoreSaved);
     }
 
     void Bad()
     {
         Debug.Log("bad");
         animator.Play("Bad");
+		//GameOver
+		SceneManager.LoadScene("GameOver");
     }
 }
