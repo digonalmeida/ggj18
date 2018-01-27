@@ -6,7 +6,19 @@ public class Paciente : MonoBehaviour {
     public GameObject healAnimation = null;
     Animator animator;
     public float walkSpeed;
-    public bool direction;
+    bool _direction = false;
+    public bool direction
+    {
+        get
+        {
+            return _direction;
+        }
+        set
+        {
+            _direction = value;
+            updateDirection();
+        }
+    }
     public float maxDistance;
     public float infectionLevel;
     public bool isSick = false;
@@ -22,6 +34,7 @@ public class Paciente : MonoBehaviour {
 
     public float hospitalLinePos;
     public bool bateVolta = false;
+    Rigidbody2D _rigidbody;
     
 
     // Máquina de estados do paciente
@@ -40,6 +53,7 @@ public class Paciente : MonoBehaviour {
     {
         animator = GetComponent<Animator>();
         setState(State.WALKING);
+        
     }
 
 
@@ -93,7 +107,7 @@ public class Paciente : MonoBehaviour {
     }
     public void OnDropped()
     {
-        if(transform.position.y > 0)
+        if(transform.position.y > 1)
         {
             setState(State.WALKING);
         }
@@ -104,6 +118,7 @@ public class Paciente : MonoBehaviour {
     }
     void Awake ()
     {
+        _rigidbody = GetComponent<Rigidbody2D>();
         infectionLevel = Random.Range(0, 10f);
 
         if (infectionLevel >= 6)
@@ -135,7 +150,6 @@ public class Paciente : MonoBehaviour {
             bool otherDirection = otherPacient.direction;
             if ((direction != otherDirection) && other.tag != "Trigger" && (Time.time > infectionTime + infectionCooldown))
             {
-                Debug.Log("Estou em um trigger!? " + gameObject.tag + "->" + other.gameObject.tag);
                 infectionLevel += 5f;
                 infectionTime = Time.time;
             }
@@ -189,16 +203,18 @@ public class Paciente : MonoBehaviour {
 
         if (!direction) // Significa que spawnei na direita. Mover para a esquerda.
         {
-            transform.Translate(Vector3.left * Time.deltaTime * (walkSpeed + Random.Range(0f, 2f)));
+            _rigidbody.velocity = Vector3.left * ( walkSpeed + Random.Range(0f, 2.0f));
+            //transform.Translate(Vector3.left * Time.deltaTime * (walkSpeed + Random.Range(0f, 2f)));
             
         }
         else // Significa que spawnei na esquerda. Mover para a direita.
         {
-            transform.Translate(Vector3.right * Time.deltaTime * (walkSpeed + Random.Range(0f, 2f)));
+            _rigidbody.velocity = Vector3.right * (walkSpeed + Random.Range(0f, 2.0f));
+            //   transform.Translate(Vector3.right * Time.deltaTime * (walkSpeed + Random.Range(0f, 2f)));
         }
 
         // Pequena aleatorizada no movimento vertical
-        transform.Translate(Vector3.up * Time.deltaTime * (Random.Range(-1f, 1f)));
+       // transform.Translate(Vector3.up * Time.deltaTime * (Random.Range(-1f, 1f)));
 
 
         // É destruído se sai da tela
