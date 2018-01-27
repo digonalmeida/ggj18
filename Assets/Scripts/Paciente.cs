@@ -8,11 +8,16 @@ public class Paciente : MonoBehaviour {
     public bool direction;
     public float maxDistance;
     public float infectionLevel;
-    public bool isSick = false;    
+    public bool isSick = false;
+
+    SpriteRenderer spriteRenderer;
+
+    private float infectionTime = 0f;
+    private float infectionCooldown = 2f;
 
     void Start () {
-        
-	}
+        spriteRenderer = GetComponent<SpriteRenderer>();
+    }
 
     void Awake ()
     {
@@ -37,14 +42,25 @@ public class Paciente : MonoBehaviour {
     void OnTriggerEnter2D (Collider2D other)
     {
         // Se estou dentro do raio de um infectado, me infecte mais rápido. NÃO FUNCIONA
-        if(direction && other.tag != "Trigger")
+        if (other.gameObject.GetComponent<Paciente>() != null)
         {
-            Debug.Log("Estou em um trigger!? " + gameObject.tag + "->" + other.gameObject.tag);
-            infectionLevel += 0.5f;
+            Paciente otherPacient = other.gameObject.GetComponent<Paciente>();
+            bool otherDirection = otherPacient.direction;
+            if ((direction != otherDirection) && other.tag != "Trigger" && (Time.time > infectionTime + infectionCooldown))
+            {
+                Debug.Log("Estou em um trigger!? " + gameObject.tag + "->" + other.gameObject.tag);
+                infectionLevel += 1f;
+                infectionTime = Time.time;
+            }
         }
     }
 
     void Update () {
+
+        // Mais infectado = mais verde
+        if (infectionLevel > 10) infectionLevel = 10;
+        spriteRenderer.color = new Color(infectionLevel * 0.1f, 0f, 0f);
+
         infectionLevel += 0.1f * Time.deltaTime;
 
         if (!direction) // Significa que spawnei na direita. Mover para a esquerda.
