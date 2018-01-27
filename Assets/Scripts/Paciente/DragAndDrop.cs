@@ -62,7 +62,7 @@ public class DragAndDrop : MonoBehaviour {
         switch (state)
         {
             case State.IDLE:
-                setAnimation(idleAnimationName);
+               // setAnimation(idleAnimationName);
                 break;
             case State.DRAGGING:
                 setAnimation(draggingAnimationName);
