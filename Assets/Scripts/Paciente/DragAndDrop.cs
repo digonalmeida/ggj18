@@ -144,7 +144,7 @@ public class DragAndDrop : MonoBehaviour {
     void startDragging()
     {
         holding++;
-        AudioManagerSingleton.instance.PlaySound(Random.Range(3, 5), AudioManagerSingleton.AudioType.SFX, false, 0.5f);
+        AudioManagerSingleton.instance.PlaySound(Random.Range(4, 12), AudioManagerSingleton.AudioType.SFX, false, 0.5f);
         _paciente.OnDragged();
     }
     void updateDragging()

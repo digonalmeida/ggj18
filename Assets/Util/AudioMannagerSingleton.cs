@@ -15,7 +15,11 @@ public class AudioManagerSingleton : MonoBehaviour {
 		HOSPITAL,
         GRITO1,
         GRITO2,
-        GRITO3
+        GRITO3,
+        GRITO4,
+        GRITO5,
+        GRITO6,
+        GRITO7
     }
 
 	/// <summary>
@@ -34,11 +38,11 @@ public class AudioManagerSingleton : MonoBehaviour {
 	/// <summary>
 	/// A volume value that affects all sounds. Setting a 0(zero) value will mute all sounds. This is different from the MuteAll() method.
 	/// </summary>
-	public float masterVolume = 1;
+	public float masterVolume = 1f;
 
-	public float sfxVolume = 0.4f;
+	public float sfxVolume = 4f;
 
-	public float musicVolume = 1;
+	public float musicVolume = 1f;
 
 	private bool _initialized = false;
 	private List<AudioSource> _audioSourceInactivePool;
