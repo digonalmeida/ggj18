@@ -62,7 +62,7 @@ public class DragAndDrop : MonoBehaviour {
         switch (state)
         {
             case State.IDLE:
-                setAnimation(idleAnimationName);
+               // setAnimation(idleAnimationName);
                 break;
             case State.DRAGGING:
                 setAnimation(draggingAnimationName);
@@ -144,7 +144,7 @@ public class DragAndDrop : MonoBehaviour {
     void startDragging()
     {
         holding++;
-        AudioManagerSingleton.instance.PlaySound(Random.Range(4, 9), AudioManagerSingleton.AudioType.SFX, false, 0.5f);
+        AudioManagerSingleton.instance.PlaySound(Random.Range(4, 12), AudioManagerSingleton.AudioType.SFX, false, 0.5f);
         _paciente.OnDragged();
     }
     void updateDragging()
