@@ -19,7 +19,9 @@ public class AudioManagerSingleton : MonoBehaviour {
         GRITO4,
         GRITO5,
         GRITO6,
-        GRITO7
+        GRITO7,
+        HEAL,
+        GAMEOVER
     }
 
 	/// <summary>
