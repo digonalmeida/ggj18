@@ -10,7 +10,7 @@ public class AudioManagerSingleton : MonoBehaviour {
 	/// </summary>
 	public enum AudioClipName
 	{
-		BACKGROUND,
+		CHICK_WRONG,
 		POP,
 		BURBURINHO,
 		WHATASMALL
