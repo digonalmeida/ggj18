@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameController : MonoBehaviour {
-    public int holding = 0;
-    public int maxHolding = 3;
+public class asdf : MonoBehaviour {
+
 	// Use this for initialization
 	void Start () {
 		

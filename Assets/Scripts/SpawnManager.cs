@@ -21,8 +21,9 @@ public class SpawnManager : MonoBehaviour {
     void SpawnGO ()
     {
         int spawnPointIndex = Random.Range(0, spawnPoints.Length);
+        
         Vector3 spawnPosition = spawnPoints[spawnPointIndex].position;
-        spawnPosition.y += Random.Range(-2.3f, -0.3f);
+        spawnPosition.y += Random.Range(-0.5f, 0.5f);
         Instantiate(pacienteGO, spawnPosition, spawnPoints[spawnPointIndex].rotation);
     }
 }
