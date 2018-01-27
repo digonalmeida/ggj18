@@ -11,9 +11,8 @@ public class AudioManagerSingleton : MonoBehaviour {
 	public enum AudioClipName
 	{
 		CHICK_WRONG,
-		POP,
-		BURBURINHO,
-		WHATASMALL
+		GRITO,
+		SWOSH
 	}
 
 	/// <summary>

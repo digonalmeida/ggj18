@@ -18,6 +18,10 @@ public class DragAndDrop : MonoBehaviour {
     string draggingAnimationName = "dragging";
     string droppingAnimationName = "dropping";
 
+
+    AudioManagerSingleton.AudioClipName draggingSfx = AudioManagerSingleton.AudioClipName.GRITO;
+    AudioManagerSingleton.AudioClipName droppingSfx = AudioManagerSingleton.AudioClipName.SWOSH;
+
     public enum State {
         IDLE,
         DRAGGING,
@@ -30,6 +34,7 @@ public class DragAndDrop : MonoBehaviour {
     void Start()
     {
         _rigidBody = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
     }
 
     void Update()
@@ -88,27 +93,29 @@ public class DragAndDrop : MonoBehaviour {
         state = newState;
         switch(newState)
         {
-            case State.DRAGGING:
-                startDragging();
-                break;
             case State.DROPPING:
                 startDropping();
                 break;
-            case State.IDLE:
-                startIdle();
+            case State.DRAGGING:
+                startDragging();
                 break;
         }
         updateAnimation();
     }
 
+    void startDragging()
+    {
+        AudioManagerSingleton.instance.PlaySound(draggingSfx, AudioManagerSingleton.AudioType.SFX);
+    }
     void updateDragging()
     {
         recordInertiaHistory();
-        MoveToMousePosition();
+        moveToMousePosition();
     }
     
     void startDropping()
     {
+        AudioManagerSingleton.instance.PlaySound(droppingSfx, AudioManagerSingleton.AudioType.SFX);
         applyInertia();
         StartCoroutine(droppingCoroutine());
     }
@@ -119,7 +126,7 @@ public class DragAndDrop : MonoBehaviour {
 
         if (inertiaPositioHistory.Count == 0)
         {
-            throwVelocity = 0;
+            throwVelocity = Vector2.zero;
         }
         else
         {
