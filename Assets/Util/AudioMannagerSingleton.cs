@@ -11,10 +11,12 @@ public class AudioManagerSingleton : MonoBehaviour {
 	public enum AudioClipName
 	{
 		CHICK_WRONG,
-		GRITO,
 		SWOSH,
-		HOSPITAL
-	}
+		HOSPITAL,
+        GRITO1,
+        GRITO2,
+        GRITO3
+    }
 
 	/// <summary>
 	/// AudioTypes may be used to group up sounds and perform actions to those groups only. For example, you may have Sound Effects(SFX) and Music groups, so the user may choose to mute/unmute one.

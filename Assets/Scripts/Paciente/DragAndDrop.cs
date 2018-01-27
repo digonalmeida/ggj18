@@ -23,7 +23,7 @@ public class DragAndDrop : MonoBehaviour {
     public float colliderRadius = 10f;
 
 
-    AudioManagerSingleton.AudioClipName draggingSfx = AudioManagerSingleton.AudioClipName.GRITO;
+    AudioManagerSingleton.AudioClipName draggingSfx = AudioManagerSingleton.AudioClipName.GRITO1;
     AudioManagerSingleton.AudioClipName droppingSfx = AudioManagerSingleton.AudioClipName.SWOSH;
 
     Paciente _paciente;
@@ -144,7 +144,7 @@ public class DragAndDrop : MonoBehaviour {
     void startDragging()
     {
         holding++;
-        AudioManagerSingleton.instance.PlaySound(draggingSfx, AudioManagerSingleton.AudioType.SFX, false, 0.3f);
+        AudioManagerSingleton.instance.PlaySound(Random.Range(3, 5), AudioManagerSingleton.AudioType.SFX, false, 0.5f);
         _paciente.OnDragged();
     }
     void updateDragging()
