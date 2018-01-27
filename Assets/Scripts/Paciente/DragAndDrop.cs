@@ -18,6 +18,10 @@ public class DragAndDrop : MonoBehaviour {
     string draggingAnimationName = "dragging";
     string droppingAnimationName = "dropping";
 
+
+    AudioManagerSingleton.AudioClipName draggingSfx = AudioManagerSingleton.AudioClipName.GRITO;
+    AudioManagerSingleton.AudioClipName droppingSfx = AudioManagerSingleton.AudioClipName.SWOSH;
+
     public enum State {
         IDLE,
         DRAGGING,
@@ -92,10 +96,17 @@ public class DragAndDrop : MonoBehaviour {
             case State.DROPPING:
                 startDropping();
                 break;
+            case State.DRAGGING:
+                startDragging();
+                break;
         }
         updateAnimation();
     }
 
+    void startDragging()
+    {
+        AudioManagerSingleton.instance.PlaySound(draggingSfx, AudioManagerSingleton.AudioType.SFX);
+    }
     void updateDragging()
     {
         recordInertiaHistory();
@@ -104,6 +115,7 @@ public class DragAndDrop : MonoBehaviour {
     
     void startDropping()
     {
+        AudioManagerSingleton.instance.PlaySound(droppingSfx, AudioManagerSingleton.AudioType.SFX);
         applyInertia();
         StartCoroutine(droppingCoroutine());
     }
