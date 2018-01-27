@@ -5,6 +5,18 @@ using UnityEngine.Events;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class DragAndDrop : MonoBehaviour {
+    Animator animator;
+
+    //Used for drop inertia
+    public List<Vector3> inertiaPositioHistory;
+    public int inertiaHistoryMaxCount = 5;
+    public float inertiaSensibility = 40;
+    public float inertiaDuration = 0.3f;
+
+    //animation
+    string idleAnimationName = "idle";
+    string draggingAnimationName = "dragging";
+    string droppingAnimationName = "dropping";
 
     public enum State {
         IDLE,
@@ -12,11 +24,23 @@ public class DragAndDrop : MonoBehaviour {
         DROPPING
     };
 
-    public Animator animator;
+    public State state = State.IDLE;
+    Rigidbody2D _rigidBody;
 
-    string idleAnimationName = "idle";
-    string draggingAnimationName = "dragging";
-    string droppingAnimationName = "dropping";
+    void Start()
+    {
+        _rigidBody = GetComponent<Rigidbody2D>();
+    }
+
+    void Update()
+    {
+        switch (state)
+        {
+            case State.DRAGGING:
+                updateDragging();
+                return;
+        }
+    }
 
     void updateAnimation()
     {
@@ -45,44 +69,20 @@ public class DragAndDrop : MonoBehaviour {
         animator.Play(animationName);
     }
 
-    public List<Vector3> lastPositions;
-    public int numberOfPositions = 5;
-    public float throwSensibility = 40;
-    public UnityEvent OnStartDraggin;
-    public UnityEvent OnStartDropping;
-    public UnityEvent OnEndDropping;
-    public float droppingTime = 0.3f;
-
-    public void recordPosition()
+    public void recordInertiaHistory()
     {
-        lastPositions.Add(transform.position);
-        if(lastPositions.Count > numberOfPositions)
+        inertiaPositioHistory.Add(transform.position);
+        if(inertiaPositioHistory.Count > inertiaHistoryMaxCount)
         {
-            lastPositions.RemoveAt(0);
+            inertiaPositioHistory.RemoveAt(0);
         }
     }
-    public void clearPositions()
+
+    public void clearInertiaHistory()
     {
-        lastPositions.Clear();
+        inertiaPositioHistory.Clear();
     }
-
-    public Vector2 calculateDraggingVelocity()
-    {
-        if(lastPositions.Count == 0)
-        {
-            return Vector2.zero;
-        }
-
-        return (transform.position - lastPositions[0]) * throwSensibility;
-    }
-
-    public State state = State.IDLE;
-    Rigidbody2D _rigidBody;
-    void Start()
-    {
-        _rigidBody = GetComponent<Rigidbody2D>();
-    }
-
+    
     void setState(State newState)
     {
         state = newState;
@@ -101,87 +101,38 @@ public class DragAndDrop : MonoBehaviour {
         updateAnimation();
     }
 
-
-    void Update()
-    {
-        switch(state)
-        {
-            case State.DRAGGING:
-                updateDragging();
-                return;
-            case State.DROPPING:
-                return;
-            case State.IDLE:
-                updateIdle();
-                return;
-        }
-    }
-
-
-    void startIdle()
-    {
-        Debug.Log("start idle");
-    }
-
-    void updateIdle()
-    {
-        if(checkIfClicked())
-        {
-          //  setState(State.DRAGGING);
-        }
-    }
-
-    bool checkIfClicked()
-    {
-        return false;
-        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Vector3 mouseDirection;
-        
-        if (Input.GetMouseButtonDown(0))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-    void startDragging()
-    {
-        OnStartDraggin.Invoke();
-    }
-
-    void stopDropping()
-    {
-        OnEndDropping.Invoke();
-        setState(State.IDLE);
-        _rigidBody.velocity = Vector2.zero;
-    }
-
     void updateDragging()
     {
-        recordPosition();
-
-        Debug.Log("stop dragging");
+        recordInertiaHistory();
         MoveToMousePosition();
-
-        
     }
     
     void startDropping()
     {
-        OnStartDropping.Invoke();
-        //throw
-        Vector2 throwVelocity = calculateDraggingVelocity();
-        _rigidBody.velocity = throwVelocity;
-        clearPositions();
-        Debug.Log("startDropping");
+        applyInertia();
         StartCoroutine(droppingCoroutine());
     }
-    
+
+    void applyInertia()
+    {
+        Vector2 throwVelocity;
+
+        if (inertiaPositioHistory.Count == 0)
+        {
+            throwVelocity = 0;
+        }
+        else
+        {
+            throwVelocity = (transform.position - inertiaPositioHistory[0]) * inertiaSensibility;
+        }
+        
+        _rigidBody.velocity = throwVelocity;
+        inertiaPositioHistory.Clear();
+    }
+
     IEnumerator droppingCoroutine()
     {
-        float droppingTimeout = droppingTime;
+        float droppingTimeout = inertiaDuration;
 
         while (droppingTimeout > 0)
         {
@@ -189,28 +140,20 @@ public class DragAndDrop : MonoBehaviour {
             yield return null;
         }
         stopDropping();
-
-
         yield return null;
     }
 
-    void MoveToMousePosition()
+    void stopDropping()
     {
-        Vector3 newPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        newPosition.z = 0;
-        transform.position = newPosition;
+        _rigidBody.velocity = Vector2.zero;
+        setState(State.IDLE);
     }
 
-    bool checkDropped()
+    void moveToMousePosition()
     {
-        if(Input.GetMouseButtonUp(0))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        Vector3 newPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        newPosition.z = transform.position.z;
+        transform.position = newPosition;
     }
     
     void OnMouseDown()
