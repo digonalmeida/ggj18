@@ -47,6 +47,7 @@ public class SafeZone : MonoBehaviour {
             AudioManagerSingleton.AudioType.SFX, false, 2);
 		GameManager.Instance.scoreSaved ++;
 		GameManager.Instance.contZombie --;
+
     }
 
     void Bad()
@@ -56,6 +57,7 @@ public class SafeZone : MonoBehaviour {
             AudioManagerSingleton.AudioType.SFX, false, 2);
         Debug.Log("bad");
         animator.Play("Bad");
+		GameManager.Instance.gameOverInfected = true;
 		//GameOver
 		SceneManager.LoadScene("GameOver");
     }

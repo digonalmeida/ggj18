@@ -11,6 +11,12 @@ public class GameManager : MonoBehaviour {
 
 	public int contZombie = 0;
 
+	public int highScore = 0;
+
+	public bool gameOverInfected = false;
+
+	private static string keyScore = "HighScore";
+
 	public static GameManager mInstance;
 
 	public static GameManager Instance
@@ -21,6 +27,7 @@ public class GameManager : MonoBehaviour {
 				GameObject go = new GameObject();
 				mInstance = go.AddComponent<GameManager>();
 				mInstance.scoreSaved = 0;
+				mInstance.highScore = PlayerPrefs.GetInt (keyScore, 0);
 			}
 			return mInstance;
 		}
@@ -31,14 +38,20 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void cleanGame(){
+		if (scoreSaved > highScore) {
+			highScore = scoreSaved;
+			PlayerPrefs.SetInt (keyScore, highScore);
+		}
 		scoreSaved = 0;
 
 		contZombie = 0;
+
 	}
 
 	public void checkMaxZombie(){
 		if (contZombie >= maxZombie) {
 			SceneManager.LoadScene("GameOver");
+			gameOverInfected = false;
 		}
 	}
 }
