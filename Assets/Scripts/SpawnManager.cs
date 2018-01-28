@@ -25,5 +25,7 @@ public class SpawnManager : MonoBehaviour {
         Vector3 spawnPosition = spawnPoints[spawnPointIndex].position;
         spawnPosition.y += Random.Range(-0.5f, 0.5f);
         Instantiate(pacienteGO, spawnPosition, spawnPoints[spawnPointIndex].rotation);
+		GameManager.Instance.contZombie++;
+		GameManager.Instance.checkMaxZombie ();
     }
 }

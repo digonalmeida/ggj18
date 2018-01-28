@@ -13,8 +13,9 @@ public class GameOverMannager : MonoBehaviour {
     void Start () {
         AudioManagerSingleton.instance.StopSound(AudioManagerSingleton.AudioType.MUSIC);
         AudioManagerSingleton.instance.PlaySound(gameOverSfx, AudioManagerSingleton.AudioType.SFX);
-        score.text = "Score: " + GameScoreMannager.Instance.scoreSaved;
-		GameScoreMannager.Instance.scoreSaved = 0;
+		Debug.Log ("Score : " + GameManager.Instance.scoreSaved);
+        score.text = "Score: " + GameManager.Instance.scoreSaved;
+		GameManager.Instance.cleanGame ();
 	}
 	
 	// Update is called once per frame
