@@ -13,6 +13,7 @@ public class SpawnManager : MonoBehaviour {
 		AudioManagerSingleton.instance.PlaySound (
 			AudioManagerSingleton.AudioClipName.HOSPITAL, AudioManagerSingleton.AudioType.MUSIC, true, 1f);
 		GameManager.Instance.cleanGame ();
+		Input.multiTouchEnabled = false;
 	}
 	
 	void Update () {

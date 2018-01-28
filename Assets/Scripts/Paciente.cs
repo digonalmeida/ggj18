@@ -197,9 +197,8 @@ public class Paciente : MonoBehaviour {
     void MajorHealFeedback()
     {
         healAnimation.SetActive(true);
-        AudioManagerSingleton.instance.sfxVolume = 1.4f;
-        AudioManagerSingleton.instance.PlaySound(healSfx, AudioManagerSingleton.AudioType.SFX);
-        AudioManagerSingleton.instance.sfxVolume = 0.4f;
+		AudioManagerSingleton.instance.PlaySound(healSfx, AudioManagerSingleton.AudioType.SFX, false,
+			0.1f,0.5f,0.8f);
         healAnimation.GetComponent<Animator>().Play("heal");
     }
 
@@ -210,9 +209,7 @@ public class Paciente : MonoBehaviour {
     void MajorSicknessFeedback()
     {
         sickAnimation.SetActive(true);
-        AudioManagerSingleton.instance.sfxVolume = 1.4f;
-        AudioManagerSingleton.instance.PlaySound(sicknessSfx, AudioManagerSingleton.AudioType.SFX);
-        AudioManagerSingleton.instance.sfxVolume = 0.4f;
+		AudioManagerSingleton.instance.PlaySound(sicknessSfx, AudioManagerSingleton.AudioType.SFX,false,0.8f,0.3f,0.8f );
         healAnimation.GetComponent<Animator>().Play("sick");
     }
 

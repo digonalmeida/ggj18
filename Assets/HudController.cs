@@ -6,9 +6,13 @@ using UnityEngine.UI;
 public class HudController : MonoBehaviour {
     public Text zombiesText;
     public Text savesText;
+
+	public GameObject zombiePanel;
+
+	public Image panelImage;
 	// Use this for initialization
 	void Start () {
-		
+		panelImage = zombiePanel.GetComponent<Image> ();
 	}
 	
 	// Update is called once per frame
@@ -18,5 +22,13 @@ public class HudController : MonoBehaviour {
         int saves = GameManager.Instance.scoreSaved;
         zombiesText.text = zombies.ToString() + "/" + maxZombies;
         savesText.text = saves.ToString() ;
+	
+		if (zombies >= maxZombies * 0.75) {
+			panelImage.color = new Color32 (200, 0, 0, 184);
+		} else if (zombies >= maxZombies * 0.50) {
+			panelImage.color = new Color32 (255, 0, 0, 184);
+		} else {
+			panelImage.color = new Color32 (194, 194, 194, 184);
+		}
 	}
 }
