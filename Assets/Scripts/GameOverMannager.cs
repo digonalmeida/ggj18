@@ -13,7 +13,6 @@ public class GameOverMannager : MonoBehaviour {
     void Start () {
         AudioManagerSingleton.instance.StopSound(AudioManagerSingleton.AudioType.MUSIC);
         AudioManagerSingleton.instance.PlaySound(gameOverSfx, AudioManagerSingleton.AudioType.SFX);
-		Debug.Log ("Score : " + GameManager.Instance.scoreSaved);
         score.text = "Score: " + GameManager.Instance.scoreSaved;
 		GameManager.Instance.cleanGame ();
 	}
