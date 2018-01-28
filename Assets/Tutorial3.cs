@@ -29,11 +29,16 @@ public class Tutorial3 : MonoBehaviour {
 	void Update () {
 		if(missionCompleted)
         {
+            int countState = 0;
             for(int i = 0; i < 3; i++)
             {
                 if (pacientes[i].state != Paciente.State.HOSPITAL)
                 {
-                    return;
+                    countState++;
+                    if(countState >= 2)
+                    {
+                        return;
+                    }
                 }
             }
 

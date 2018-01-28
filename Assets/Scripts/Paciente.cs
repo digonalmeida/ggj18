@@ -132,8 +132,13 @@ public class Paciente : MonoBehaviour {
     }
     void Awake ()
     {
+        
+        if (state != State.DUMMY)
+        {
+            infectionLevel = Random.Range(0, 10f);
+        }
         _rigidbody = GetComponent<Rigidbody2D>();
-        infectionLevel = Random.Range(0, 10f);
+        
 
         if (infectionLevel >= 6)
         {
