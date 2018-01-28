@@ -12,6 +12,7 @@ public class SpawnManager : MonoBehaviour {
         InvokeRepeating("SpawnGO", 1, spawnDelay);
 		AudioManagerSingleton.instance.PlaySound (
 			AudioManagerSingleton.AudioClipName.HOSPITAL, AudioManagerSingleton.AudioType.MUSIC, true, 1f);
+		GameManager.Instance.cleanGame ();
 	}
 	
 	void Update () {
