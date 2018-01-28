@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class SafeZone : MonoBehaviour {
 
-	private float infectionAllow = 0.3f;
+	private float infectionAllow = 3.0f;
     Animator animator;
 	// Use this for initialization
 	void Start () {
@@ -19,6 +19,10 @@ public class SafeZone : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D other)
     {
+        if(!enabled)
+        {
+            return;
+        }
         if(other.tag == "Paciente")
         {
             Paciente paciente = other.GetComponent<Paciente>();
@@ -38,12 +42,18 @@ public class SafeZone : MonoBehaviour {
     {
         Debug.Log("good");
         animator.Play("Good");
+        AudioManagerSingleton.instance.PlaySound(
+            AudioManagerSingleton.AudioClipName.RIGHT_MOVE, 
+            AudioManagerSingleton.AudioType.SFX, false, 2);
 		GameManager.Instance.scoreSaved ++;
 		GameManager.Instance.contZombie --;
     }
 
     void Bad()
     {
+        AudioManagerSingleton.instance.PlaySound(
+            AudioManagerSingleton.AudioClipName.WRONG_MOVE,
+            AudioManagerSingleton.AudioType.SFX, false, 2);
         Debug.Log("bad");
         animator.Play("Bad");
 		//GameOver

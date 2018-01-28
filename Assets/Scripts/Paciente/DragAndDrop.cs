@@ -125,6 +125,12 @@ public class DragAndDrop : MonoBehaviour {
     public float distance;
     bool checkMouseCollision()
     {
+        if (Input.mousePosition.x < 0 || Input.mousePosition.x > Screen.width ||
+            Input.mousePosition.y < 0 || Input.mousePosition.y > Screen.height)
+        {
+            return false;
+        }
+
         if(gameController.holding >= gameController.maxHolding)
         {
             return false;
@@ -145,7 +151,7 @@ public class DragAndDrop : MonoBehaviour {
     }
     void startDragging()
     {
-        _rigidBody.isKinematic = true;
+       // _rigidBody.isKinematic = true;
         gameController.holding++;
         AudioManagerSingleton.instance.sfxVolume = 3f;
         AudioManagerSingleton.instance.PlaySound(Random.Range(4, 9), AudioManagerSingleton.AudioType.SFX, false, 0.5f);
@@ -184,7 +190,7 @@ public class DragAndDrop : MonoBehaviour {
         {
             
             throwVelocity = (transform.position - inertiaPositioHistory[0]) * inertiaSensibility;
-            throwVelocity.x += Random.Range(-5f, 5f);
+            throwVelocity.x += Random.Range(-7f, 7f);
         }
         
         _rigidBody.velocity = throwVelocity;
