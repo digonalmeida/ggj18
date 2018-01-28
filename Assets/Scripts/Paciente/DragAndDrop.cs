@@ -24,6 +24,8 @@ public class DragAndDrop : MonoBehaviour {
     AudioManagerSingleton.AudioClipName draggingSfx = AudioManagerSingleton.AudioClipName.GRITO1;
     AudioManagerSingleton.AudioClipName droppingSfx = AudioManagerSingleton.AudioClipName.SWOSH;
 
+	AudioManagerSingleton.AudioClipName falling = AudioManagerSingleton.AudioClipName.FALLING;
+
     Paciente _paciente;
 
     public enum State {
@@ -153,9 +155,7 @@ public class DragAndDrop : MonoBehaviour {
     {
        // _rigidBody.isKinematic = true;
         gameController.holding++;
-        AudioManagerSingleton.instance.sfxVolume = 3f;
         AudioManagerSingleton.instance.PlaySound(Random.Range(4, 9), AudioManagerSingleton.AudioType.SFX, false, 0.5f);
-        AudioManagerSingleton.instance.sfxVolume = 0.4f;
         _paciente.OnDragged();
     }
     void updateDragging()
@@ -173,13 +173,14 @@ public class DragAndDrop : MonoBehaviour {
     {
         _rigidBody.isKinematic = false;
         gameController.holding = 0;
-        AudioManagerSingleton.instance.PlaySound(droppingSfx, AudioManagerSingleton.AudioType.SFX);
+		AudioManagerSingleton.instance.PlaySound(droppingSfx, AudioManagerSingleton.AudioType.SFX, false, 1f);
         applyInertia();
         StartCoroutine(droppingCoroutine());
     }
 
     void applyInertia()
     {
+		
         Vector2 throwVelocity;
 
         if (inertiaPositioHistory.Count == 0)
@@ -192,7 +193,7 @@ public class DragAndDrop : MonoBehaviour {
             throwVelocity = (transform.position - inertiaPositioHistory[0]) * inertiaSensibility;
             throwVelocity.x += Random.Range(-7f, 7f);
         }
-        
+
         _rigidBody.velocity = throwVelocity;
         inertiaPositioHistory.Clear();
     }
@@ -207,6 +208,7 @@ public class DragAndDrop : MonoBehaviour {
             yield return null;
         }
         _rigidBody.velocity = Vector2.zero;
+		AudioManagerSingleton.instance.PlaySound (falling,AudioManagerSingleton.AudioType.SFX, false, 5f);
         yield return new WaitForSeconds(0.3f);
         stopDropping();
         yield return null;
@@ -214,6 +216,7 @@ public class DragAndDrop : MonoBehaviour {
 
     void stopDropping()
     {
+		
         animator.StopPlayback();
         _rigidBody.velocity = Vector2.zero;
         setState(State.IDLE);

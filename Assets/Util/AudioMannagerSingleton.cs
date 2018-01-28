@@ -25,7 +25,8 @@ public class AudioManagerSingleton : MonoBehaviour {
         CLICK,
         BECOMING_ZOMBIE,
         RIGHT_MOVE,
-        WRONG_MOVE
+		WRONG_MOVE,
+		FALLING
     }
 
 	/// <summary>
@@ -46,7 +47,7 @@ public class AudioManagerSingleton : MonoBehaviour {
 	/// </summary>
 	public float masterVolume = 1;
 
-	public float sfxVolume = 0.4f;
+	public float sfxVolume = 0.8f;
 
 	public float musicVolume = 1;
 
