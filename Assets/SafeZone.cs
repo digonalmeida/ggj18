@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class SafeZone : MonoBehaviour {
 
+	private float infectionAllow = 0.3f;
     Animator animator;
 	// Use this for initialization
 	void Start () {
@@ -25,7 +26,7 @@ public class SafeZone : MonoBehaviour {
         if(other.tag == "Paciente")
         {
             Paciente paciente = other.GetComponent<Paciente>();
-            if(paciente.infectionLevel > 0)
+			if(paciente.infectionLevel > infectionAllow)
             {
                 Bad();
             }
@@ -41,8 +42,8 @@ public class SafeZone : MonoBehaviour {
     {
         Debug.Log("good");
         animator.Play("Good");
-		GameScoreMannager.Instance.scoreSaved ++;
-		Debug.Log(GameScoreMannager.Instance.scoreSaved);
+		GameManager.Instance.scoreSaved ++;
+		GameManager.Instance.contZombie --;
     }
 
     void Bad()
