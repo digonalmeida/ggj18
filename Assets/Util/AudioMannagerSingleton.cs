@@ -22,7 +22,10 @@ public class AudioManagerSingleton : MonoBehaviour {
         GRITO7,
         HEAL,
         GAMEOVER,
-        CLICK
+        CLICK,
+        BECOMING_ZOMBIE,
+        RIGHT_MOVE,
+        WRONG_MOVE
     }
 
 	/// <summary>

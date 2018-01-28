@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Paciente : MonoBehaviour {
     public GameObject healAnimation = null;
+    public GameObject sickAnimation = null;
     Animator animator;
     public float walkSpeed;
     bool _direction = false;
@@ -35,7 +36,16 @@ public class Paciente : MonoBehaviour {
     public float hospitalLinePos;
     public bool bateVolta = false;
 
+    public Sprite normalHeadSprite;
+    public Sprite zombieHeadSprite;
+
+    public SpriteRenderer headSpriteRenderer;
+    public Color zombieColorStart;
+    public Color zombieColorEnd;
+
     AudioManagerSingleton.AudioClipName healSfx = AudioManagerSingleton.AudioClipName.HEAL;
+    AudioManagerSingleton.AudioClipName sicknessSfx = AudioManagerSingleton.AudioClipName.BECOMING_ZOMBIE;
+
     Rigidbody2D _rigidbody;
 
     // Máquina de estados do paciente
@@ -53,9 +63,12 @@ public class Paciente : MonoBehaviour {
     public State state;
     void Start()
     {
+
+        oldInfectionLevel = infectionLevel;
         animator = GetComponent<Animator>();
         setState(State.WALKING);
-        
+
+
     }
 
 
@@ -69,22 +82,19 @@ public class Paciente : MonoBehaviour {
             case State.HOSPITAL:
                 UpdateHospital();
                 break;
+            case State.DUMMY:
+                UpdateInfectionIndicator();
+                break;
         }
+
+
     }
 
     void UpdateHospital()
     {
-        
-        if(infectionLevel > 0 && infectionLevel - (healPerSecond * Time.deltaTime) < 0)
-        {
-            healAnimation.SetActive(true);
-            AudioManagerSingleton.instance.sfxVolume = 1.4f;
-            AudioManagerSingleton.instance.PlaySound(healSfx, AudioManagerSingleton.AudioType.SFX);
-            AudioManagerSingleton.instance.sfxVolume = 0.4f;
-            healAnimation.GetComponent<Animator>().Play("heal");
-        }
+
         infectionLevel -= healPerSecond * Time.deltaTime;
-        if (infectionLevel <= -10) infectionLevel = 10;
+        if (infectionLevel <= -7) infectionLevel = 10;
         UpdateInfectionIndicator();
         if(infectionLevel <= 0)
         {
@@ -178,6 +188,34 @@ public class Paciente : MonoBehaviour {
         }
     }
 
+    float oldInfectionLevel = 0;
+
+    void MinorHealFeedback()
+    {
+
+    }
+    void MajorHealFeedback()
+    {
+        healAnimation.SetActive(true);
+        AudioManagerSingleton.instance.sfxVolume = 1.4f;
+        AudioManagerSingleton.instance.PlaySound(healSfx, AudioManagerSingleton.AudioType.SFX);
+        AudioManagerSingleton.instance.sfxVolume = 0.4f;
+        healAnimation.GetComponent<Animator>().Play("heal");
+    }
+
+    void MinorSicknessFeedback()
+    {
+
+    }
+    void MajorSicknessFeedback()
+    {
+        sickAnimation.SetActive(true);
+        AudioManagerSingleton.instance.sfxVolume = 1.4f;
+        AudioManagerSingleton.instance.PlaySound(sicknessSfx, AudioManagerSingleton.AudioType.SFX);
+        AudioManagerSingleton.instance.sfxVolume = 0.4f;
+        healAnimation.GetComponent<Animator>().Play("sick");
+    }
+
     void UpdateInfectionIndicator()
     {
         float l = infectionLevel;
@@ -186,9 +224,41 @@ public class Paciente : MonoBehaviour {
             l = 0;
         }
 
+        if (l < 7)
+        {
+            if(oldInfectionLevel > 7)
+            {
+                MinorHealFeedback();
+            }
+            headSpriteRenderer.sprite = normalHeadSprite;
+        }
+        else
+        {
+            if(oldInfectionLevel < 7)
+            {
+                MajorSicknessFeedback();
+            }
+            headSpriteRenderer.sprite = zombieHeadSprite;
+        }
+
+        if (l > 3 && l < 7)
+        {
+            headSpriteRenderer.color = Color.Lerp(zombieColorStart, zombieColorEnd, (float)l-3 / (float)7);
+        }
+        else
+        {
+            headSpriteRenderer.color = Color.white;
+        }
+
+        if(l<=3 && oldInfectionLevel > 3)
+        {
+            MajorHealFeedback();
+        }
+
         Color c = spriteRenderer.color;
         c.a = l * 0.1f;
         spriteRenderer.color = c;
+        oldInfectionLevel = infectionLevel;
     }
     void UpdateWalking(){
         
