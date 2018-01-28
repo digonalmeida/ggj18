@@ -47,7 +47,8 @@ public class Paciente : MonoBehaviour {
     public enum State {
         WALKING,
         STUNNED,
-        HOSPITAL
+        HOSPITAL,
+        DUMMY
     }
     public State state;
     void Start()
@@ -91,7 +92,7 @@ public class Paciente : MonoBehaviour {
         }
        
     }
-    void setState(State newState)
+    public void setState(State newState)
     {
         state = newState;
         switch (state)
@@ -206,13 +207,20 @@ public class Paciente : MonoBehaviour {
 
         if (!direction) // Significa que spawnei na direita. Mover para a esquerda.
         {
-            _rigidbody.velocity = Vector3.left * ( walkSpeed + Random.Range(0f, 2.0f));
-            //transform.Translate(Vector3.left * Time.deltaTime * (walkSpeed + Random.Range(0f, 2f)));
-            
+            if(walkSpeed != 0)
+            {
+                _rigidbody.velocity = Vector3.left * (walkSpeed + Random.Range(0f, 2.0f));
+                //transform.Translate(Vector3.left * Time.deltaTime * (walkSpeed + Random.Range(0f, 2f)));
+            }
+
+
         }
         else // Significa que spawnei na esquerda. Mover para a direita.
         {
-            _rigidbody.velocity = Vector3.right * (walkSpeed + Random.Range(0f, 2.0f));
+            if(walkSpeed != 0)
+            {
+                _rigidbody.velocity = Vector3.right * (walkSpeed + Random.Range(0f, 2.0f));
+            }
             //   transform.Translate(Vector3.right * Time.deltaTime * (walkSpeed + Random.Range(0f, 2f)));
         }
 

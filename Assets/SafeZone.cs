@@ -18,6 +18,10 @@ public class SafeZone : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D other)
     {
+        if(!enabled)
+        {
+            return;
+        }
         if(other.tag == "Paciente")
         {
             Paciente paciente = other.GetComponent<Paciente>();
