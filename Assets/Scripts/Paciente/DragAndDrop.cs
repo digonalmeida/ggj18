@@ -200,6 +200,8 @@ public class DragAndDrop : MonoBehaviour {
             droppingTimeout -= Time.deltaTime;
             yield return null;
         }
+        _rigidBody.velocity = Vector2.zero;
+        yield return new WaitForSeconds(0.3f);
         stopDropping();
         yield return null;
     }
